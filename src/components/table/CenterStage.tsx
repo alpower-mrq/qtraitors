@@ -37,7 +37,7 @@ export function CenterStage({ phase, round, timeLeftMs, seatedCount, totalSeats 
           />
         </svg>
         <div className="qt-timer-stack">
-          {runoff && <div className="qt-timer-tie">Tie-break</div>}
+          {runoff && <div className="qt-timer-tie">Tied vote</div>}
           <motion.div
             className="qt-timer-num"
             key={secs}

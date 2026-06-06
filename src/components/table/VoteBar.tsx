@@ -84,7 +84,7 @@ export function VoteBar({
     if (!humanAlive) {
       return (
         <div className="qt-vbar">
-          <span className="lead">Tie-break! The table decides.</span>
+          <span className="lead">Votes tied. The table re-votes who goes.</span>
           <button className="leave" onClick={onLeave}>
             Leave
           </button>
@@ -94,7 +94,7 @@ export function VoteBar({
     if (humanIsCandidate) {
       return (
         <div className="qt-vbar danger">
-          <span className="lead">It's a tie, and you're in it. The others decide…</span>
+          <span className="lead">You're in the tie. The others vote one out.</span>
           {runoffChip}
         </div>
       );
@@ -103,7 +103,7 @@ export function VoteBar({
       return (
         <div className="qt-vbar voted">
           <span className="lead">
-            ✓ Picked <b>{humanVoteName}</b>
+            ✓ Voted out <b>{humanVoteName}</b>
           </span>
           {runoffChip}
         </div>
@@ -111,7 +111,7 @@ export function VoteBar({
     }
     return (
       <div className="qt-vbar danger">
-        <span className="lead">Tie-break! Tap who's out</span>
+        <span className="lead">Votes tied. Tap one to vote out.</span>
         {runoffChip}
       </div>
     );

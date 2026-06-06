@@ -128,10 +128,8 @@ img {
 #root {
   display: flex;
   justify-content: center;
-  background:
-    radial-gradient(110% 70% at 50% -12%, rgba(35, 71, 224, 0.45) 0%, transparent 52%),
-    radial-gradient(90% 65% at 50% 112%, rgba(7, 25, 122, 0.6) 0%, transparent 60%),
-    linear-gradient(180deg, #07123f 0%, var(--blue-950) 78%);
+  /* flat, dark navy — no bright blue gradient (keeps screens consistent) */
+  background: linear-gradient(180deg, #070f2e 0%, var(--blue-950) 85%);
 }
 
 .app-frame {
@@ -145,16 +143,15 @@ img {
   isolation: isolate;
 }
 
-/* Ambient drifting light behind everything */
+/* very faint drifting light — kept subtle so screens read as flat dark */
 .app-frame::before {
   content: "";
   position: absolute;
   inset: -20% -40%;
   background:
-    radial-gradient(40% 40% at 20% 18%, rgba(0, 178, 255, 0.12), transparent 70%),
-    radial-gradient(45% 45% at 85% 28%, rgba(255, 99, 246, 0.07), transparent 70%),
-    radial-gradient(40% 40% at 50% 100%, rgba(66, 212, 134, 0.06), transparent 70%);
-  filter: blur(12px);
+    radial-gradient(40% 40% at 22% 16%, rgba(0, 178, 255, 0.05), transparent 70%),
+    radial-gradient(45% 45% at 82% 26%, rgba(255, 99, 246, 0.03), transparent 70%);
+  filter: blur(14px);
   animation: drift 26s var(--ease-out) infinite alternate;
   z-index: 0;
   pointer-events: none;
