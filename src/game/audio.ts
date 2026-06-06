@@ -64,11 +64,14 @@ function playCurrent() {
 }
 
 export const audio = {
-  /** Call on the first user gesture to satisfy autoplay policies. */
+  /** Call on every user gesture. The first one warms the SFX; every call
+      (re)attempts the current track, so a play() the browser blocked on an
+      earlier tap recovers on the next one instead of waiting for a route change. */
   unlock() {
-    if (unlocked) return;
-    unlocked = true;
-    (Object.keys(SFX) as Sfx[]).forEach(getSfxPool); // warm up the SFX
+    if (!unlocked) {
+      unlocked = true;
+      (Object.keys(SFX) as Sfx[]).forEach(getSfxPool); // warm up the SFX
+    }
     playCurrent();
   },
   /** Switch the looping background track (or null to stop). */
@@ -79,6 +82,7 @@ export const audio = {
     }
     if (current) getMusic(current).pause();
     current = t;
+    if (t) getMusic(t); // create the element now so it preloads before the first gesture
     playCurrent();
   },
   /** Fire a one-shot sound effect (reuses a preloaded node from the pool). */

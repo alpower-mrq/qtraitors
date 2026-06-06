@@ -5,7 +5,7 @@ import { AVATARS, AVATAR_COUNT } from "@/data/avatars";
 import { TABLE_SIZE } from "@/game/constants";
 import { createBots } from "@/game/simulation";
 import { audio } from "@/game/audio";
-import { formatMoney, pick, randInt } from "@/game/util";
+import { formatMoney, pick, randInt, shuffle } from "@/game/util";
 import { Avatar } from "@/components/table/Avatar";
 
 interface Props {
@@ -20,6 +20,13 @@ type Claims = Record<string, { avatarId: number; status: ClaimStatus }>;
 export function AvatarSelectScreen({ stake, onConfirm, onBack }: Props) {
   // The five opponents for this table, generated once.
   const [bots] = useState(() => createBots());
+
+  // Reshuffle the gallery order on every visit so the faces never come up
+  // in the same arrangement twice.
+  const [ordered] = useState(() => shuffle(AVATARS));
+
+  // Tints the top bar once the grid scrolls away from the top.
+  const [scrolled, setScrolled] = useState(false);
 
   const [selected, setSelected] = useState(() => Math.floor(Math.random() * AVATAR_COUNT));
   const selectedRef = useRef(selected);
@@ -83,7 +90,7 @@ export function AvatarSelectScreen({ stake, onConfirm, onBack }: Props) {
 
   return (
     <div className="qt-screen">
-      <div className="qt-avatar-screen">
+      <div className={`qt-avatar-screen ${scrolled ? "scrolled" : ""}`}>
         <motion.button
           className="qt-back"
           onClick={onBack}
@@ -105,45 +112,56 @@ export function AvatarSelectScreen({ stake, onConfirm, onBack }: Props) {
           </svg>
         </motion.button>
 
-        <header>
-          <div className="eyebrow">
-            {formatMoney(stake)} table · pool {formatMoney(stake * TABLE_SIZE)}
-          </div>
-          <h2>Pick your face</h2>
-          <p>Grab a face before it's taken.</p>
-        </header>
+        <div
+          className="qt-avatar-scroll qt-scroll"
+          onScroll={(e) => {
+            const s = e.currentTarget.scrollTop > 6;
+            setScrolled((prev) => (prev === s ? prev : s));
+          }}
+        >
+          <header>
+            <div className="eyebrow">
+              {formatMoney(stake)} table · pool {formatMoney(stake * TABLE_SIZE)}
+            </div>
+            <h2>Pick your face</h2>
+            <p>Grab a face before it's taken.</p>
+          </header>
 
-        <div className="qt-avatar-grid qt-scroll">
-          {AVATARS.map((a) => {
-            const claim = claimByAvatar[a.id];
-            const taken = !!claim;
-            const isSel = !taken && selected === a.id;
-            return (
-              <button
-                key={a.id}
-                className={`qt-avatar-cell ${isSel ? "sel" : ""} ${taken ? `taken ${claim.status}` : ""}`}
-                onClick={() => !taken && choose(a.id)}
-                disabled={taken}
-                aria-label={taken ? `${claim.name} took this face` : `Avatar ${a.id + 1}`}
-              >
-                <Avatar
-                  avatarId={a.id}
-                  size={138}
-                  variant={taken && claim.status === "picked" ? "dead" : "alive"}
-                />
-                {taken && (
-                  <motion.span
-                    className={`qt-taken-tag ${claim.status}`}
-                    initial={{ scale: 0, y: 8 }}
-                    animate={{ scale: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 520, damping: 20 }}
-                  >
-                    {claim.status === "choosing" ? `${claim.name}…` : `🔒 ${claim.name}`}
-                  </motion.span>
-                )}
-              </button>
-            );
-          })}
+          <div className="qt-avatar-grid">
+            {ordered.map((a, i) => {
+              const claim = claimByAvatar[a.id];
+              const taken = !!claim;
+              const isSel = !taken && selected === a.id;
+              return (
+                <motion.button
+                  key={a.id}
+                  className={`qt-avatar-cell ${isSel ? "sel" : ""} ${taken ? `taken ${claim.status}` : ""}`}
+                  onClick={() => !taken && choose(a.id)}
+                  disabled={taken}
+                  aria-label={taken ? `${claim.name} took this face` : `Avatar ${a.id + 1}`}
+                  initial={{ opacity: 0, scale: 0.82 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: Math.min(i * 0.02, 0.5), type: "spring", stiffness: 420, damping: 26 }}
+                >
+                  <Avatar
+                    avatarId={a.id}
+                    size={138}
+                    variant={taken && claim.status === "picked" ? "dead" : "alive"}
+                  />
+                  {taken && (
+                    <motion.span
+                      className={`qt-taken-tag ${claim.status}`}
+                      initial={{ scale: 0, y: 8 }}
+                      animate={{ scale: 1, y: 0 }}
+                      transition={{ type: "spring", stiffness: 520, damping: 20 }}
+                    >
+                      {claim.status === "choosing" ? `${claim.name}…` : `🔒 ${claim.name}`}
+                    </motion.span>
+                  )}
+                </motion.button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="qt-avatar-foot">

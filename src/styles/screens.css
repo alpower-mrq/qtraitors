@@ -287,7 +287,6 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding-top: calc(var(--safe-top) + 14px);
 }
 /* floats top-left — doesn't take a row, so the content sits higher */
 .qt-back {
@@ -313,8 +312,19 @@
   background: var(--surface-strong);
 }
 .qt-avatar-screen header {
-  padding: 0 22px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  padding: calc(var(--safe-top) + 14px) 22px 12px;
   text-align: center;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease;
+}
+/* once the faces start scrolling under the bar, settle a really subtle
+   frosted tint + blur behind the title so it stays readable */
+.qt-avatar-screen.scrolled header {
+  background: rgba(6, 14, 48, 0.5);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  backdrop-filter: blur(12px) saturate(1.1);
 }
 .qt-avatar-screen header h2 {
   font-family: var(--font-display);
@@ -327,14 +337,17 @@
   font-size: 13px;
   margin-top: 4px;
 }
-.qt-avatar-grid {
+/* the scroll container; the header sticks to its top */
+.qt-avatar-scroll {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+}
+.qt-avatar-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 18px;
-  padding: 12px 22px 20px;
+  padding: 8px 22px 20px;
 }
 .qt-avatar-cell {
   position: relative;
