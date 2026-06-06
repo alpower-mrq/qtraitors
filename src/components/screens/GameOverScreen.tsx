@@ -48,7 +48,7 @@ export function GameOverScreen({ state, onRestart }: { state: GameState; onResta
 
         <p className="sub">
           {youWon
-            ? `${formatMoney(share)} is yours. The other ${finalists.length - 1 || 1} got the rest — that's the deal.`
+            ? `${formatMoney(share)} is yours. The other ${finalists.length - 1 || 1} got the rest. That's the deal.`
             : `The pot went to the final two. You'll read them better next time.`}
         </p>
 

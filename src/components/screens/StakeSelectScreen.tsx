@@ -55,7 +55,7 @@ export function StakeSelectScreen({ onSelect }: { onSelect: (s: Stake) => void }
           </div>
           <div className="qt-step">
             <span className="n">2</span>
-            <span className="t">Each round, the table votes someone out — 10 seconds to choose.</span>
+            <span className="t">Each round, the table votes someone out. 10 seconds to choose.</span>
           </div>
           <div className="qt-step">
             <span className="n">3</span>

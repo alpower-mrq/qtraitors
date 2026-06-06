@@ -24,7 +24,10 @@
       "Bash(git init *)",
       "Bash(git config *)",
       "Bash(git add *)",
-      "Bash(git commit -q -m 'Q-Traitors — social elimination game prototype' -m 'Mobile-first React + TypeScript prototype: simulated 6-player table, 10s voting, tie-break re-votes, sticker reactions, live avatar picking, audio, and compressed WebP/AAC assets. *)"
+      "Bash(git commit -q -m 'Q-Traitors — social elimination game prototype' -m 'Mobile-first React + TypeScript prototype: simulated 6-player table, 10s voting, tie-break re-votes, sticker reactions, live avatar picking, audio, and compressed WebP/AAC assets. *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git push *)"
     ]
   }
 }

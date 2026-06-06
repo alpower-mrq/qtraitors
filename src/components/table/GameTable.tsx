@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import type { GameState, Player } from "@/types";
 import { HUMAN_ID, TABLE_SIZE, TIMINGS } from "@/game/constants";
@@ -9,7 +9,7 @@ import { PlayerSeat, type SeatPos } from "./PlayerSeat";
 const CX = 50;
 const CY = 45;
 const RX = 36;
-const RY = 38;
+const RY = 37;
 
 function computePositions(members: Player[]): Record<string, SeatPos> {
   const k = members.length;
@@ -52,6 +52,20 @@ export function GameTable({ state, humanVote, onVote, onStickerExpire }: Props) 
     setShowLeaving(false);
   }, [leavingId]);
 
+  // Seat size scales with the stage so labels never slip behind the HUD/dock
+  // on shorter (laptop) viewports.
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [stageH, setStageH] = useState(520);
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const update = () => setStageH(el.clientHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const human = players.find((p) => p.id === HUMAN_ID);
 
   // Members that occupy a slot in the ring (drives angles). The human always
@@ -92,7 +106,13 @@ export function GameTable({ state, humanVote, onVote, onStickerExpire }: Props) 
 
   const showCounts = phase === "tally" || phase === "elimination";
   const seatedCount = players.filter((p) => p.seated).length;
-  const seatSize = positionMembers.length <= 2 ? 138 : positionMembers.length <= 3 ? 116 : 90;
+  const base = Math.max(62, Math.min(94, Math.round(stageH * 0.165)));
+  const seatSize =
+    positionMembers.length <= 2
+      ? Math.round(base * 1.5)
+      : positionMembers.length <= 3
+        ? Math.round(base * 1.26)
+        : base;
   const hasVoted = phase === "voting" && humanVote != null;
 
   // Tie-break runoff context.
@@ -101,7 +121,7 @@ export function GameTable({ state, humanVote, onVote, onStickerExpire }: Props) 
 
   return (
     <div className="qt-stage-wrap">
-      <div className="qt-stage">
+      <div className="qt-stage" ref={stageRef}>
         <div className="qt-center">
           <CenterStage
             phase={phase}

@@ -54,13 +54,14 @@ export default function App() {
     audio.setMusic(MUSIC[route]);
   }, [route]);
 
-  // Beat-driven SFX.
+  // Beat-driven SFX — fire once per phase change.
   useEffect(() => {
     if (state.phase === "elimination") audio.sfx("eliminated");
-    if (state.phase === "gameover" && state.players.some((p) => p.isHuman && p.isAlive)) {
+    else if (state.phase === "gameover" && state.players.some((p) => p.isHuman && p.isAlive)) {
       audio.sfx("cheer");
     }
-  }, [state.phase, state.players]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.phase]);
 
   return (
     <div className="app-frame">

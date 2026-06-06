@@ -7,13 +7,37 @@
   background:
     linear-gradient(
       180deg,
-      rgba(2, 6, 24, 0.5) 0%,
-      rgba(2, 6, 24, 0.12) 20%,
-      rgba(2, 6, 24, 0.12) 74%,
-      rgba(2, 6, 24, 0.55) 100%
+      rgba(2, 6, 24, 0.7) 0%,
+      rgba(2, 6, 24, 0.52) 25%,
+      rgba(2, 6, 24, 0.52) 72%,
+      rgba(2, 6, 24, 0.72) 100%
     ),
     url("/game-bg.webp") center center / cover no-repeat,
     var(--blue-950);
+}
+
+/* first-time onboarding hint */
+.qt-onboard {
+  position: absolute;
+  top: calc(var(--safe-top) + 58px);
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  z-index: 30;
+  padding: 10px 20px;
+  border-radius: var(--r-pill);
+  background: var(--yellow);
+  color: #3a2c00;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 8px 22px rgba(255, 223, 0, 0.4), 0 4px 12px rgba(0, 2, 14, 0.5);
+  pointer-events: none;
 }
 
 /* ---- HUD (top bar) ---- */
@@ -72,7 +96,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 8px 0;
+  padding: 8px 8px 16px;
 }
 
 .qt-stage {

@@ -110,7 +110,7 @@ export function AvatarSelectScreen({ stake, onConfirm, onBack }: Props) {
             {formatMoney(stake)} table · pool {formatMoney(stake * TABLE_SIZE)}
           </div>
           <h2>Pick your face</h2>
-          <p>The others are choosing too — grab one before it's taken.</p>
+          <p>Grab a face before it's taken.</p>
         </header>
 
         <div className="qt-avatar-grid qt-scroll">

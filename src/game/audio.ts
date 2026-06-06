@@ -24,6 +24,10 @@ let unlocked = false;
 let muted = false;
 let current: Track | null = null;
 const musicEls = new Map<Track, HTMLAudioElement>();
+// Each SFX keeps a small pool of preloaded nodes so hits fire instantly
+// and can overlap, instead of fetching a fresh element on every play.
+const sfxPool = new Map<Sfx, HTMLAudioElement[]>();
+const POOL_SIZE = 3;
 
 function getMusic(t: Track): HTMLAudioElement {
   let el = musicEls.get(t);
@@ -35,6 +39,21 @@ function getMusic(t: Track): HTMLAudioElement {
     musicEls.set(t, el);
   }
   return el;
+}
+
+function getSfxPool(name: Sfx): HTMLAudioElement[] {
+  let pool = sfxPool.get(name);
+  if (!pool) {
+    pool = Array.from({ length: POOL_SIZE }, () => {
+      const a = new Audio(SFX[name]);
+      a.preload = "auto";
+      a.volume = SFX_VOL[name];
+      a.load();
+      return a;
+    });
+    sfxPool.set(name, pool);
+  }
+  return pool;
 }
 
 function playCurrent() {
@@ -49,6 +68,7 @@ export const audio = {
   unlock() {
     if (unlocked) return;
     unlocked = true;
+    (Object.keys(SFX) as Sfx[]).forEach(getSfxPool); // warm up the SFX
     playCurrent();
   },
   /** Switch the looping background track (or null to stop). */
@@ -61,10 +81,17 @@ export const audio = {
     current = t;
     playCurrent();
   },
-  /** Fire a one-shot sound effect. */
+  /** Fire a one-shot sound effect (reuses a preloaded node from the pool). */
   sfx(name: Sfx) {
     if (!unlocked || muted) return;
-    const node = new Audio(SFX[name]); // fresh node so rapid hits overlap
+    const pool = getSfxPool(name);
+    // pick a node that's free (ended/paused), else the first one
+    const node = pool.find((a) => a.paused || a.ended) ?? pool[0];
+    try {
+      node.currentTime = 0;
+    } catch {
+      /* not seekable yet */
+    }
     node.volume = SFX_VOL[name];
     node.play().catch(() => {});
   },

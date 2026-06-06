@@ -41,7 +41,7 @@ export function VoteBar({
     if (!humanAlive) {
       return (
         <div className="qt-vbar">
-          <span className="lead">You're out — watching the rest unfold.</span>
+          <span className="lead">You're out. Watching the rest unfold.</span>
           <button className="leave" onClick={onLeave}>
             Leave
           </button>
@@ -52,7 +52,7 @@ export function VoteBar({
       const danger = timeLeftMs <= 3000;
       return (
         <div className={`qt-vbar ${danger ? "danger" : ""}`}>
-          <span className="lead">{danger ? "Clock's almost out — vote!" : "Tap a player to vote"}</span>
+          <span className="lead">{danger ? "Clock's almost out!" : "Tap a player to vote"}</span>
           {countChip}
         </div>
       );
@@ -84,7 +84,7 @@ export function VoteBar({
     if (!humanAlive) {
       return (
         <div className="qt-vbar">
-          <span className="lead">Tie-break — the table decides who goes.</span>
+          <span className="lead">Tie-break! The table decides.</span>
           <button className="leave" onClick={onLeave}>
             Leave
           </button>
@@ -94,7 +94,7 @@ export function VoteBar({
     if (humanIsCandidate) {
       return (
         <div className="qt-vbar danger">
-          <span className="lead">It's a tie — and you're in it. The others decide…</span>
+          <span className="lead">It's a tie, and you're in it. The others decide…</span>
           {runoffChip}
         </div>
       );

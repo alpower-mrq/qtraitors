@@ -142,7 +142,7 @@ export function ResultOverlay({ round, tension, nameOf, alive, humanAlive, onNex
         <h3>Round {round} done</h3>
         <div className="lead">
           {humanAlive ? "You're still in." : "You're out, but the table plays on."} {alive} left
-          {finalTwoNext ? " — almost the final two." : "."}
+          {finalTwoNext ? ". Almost the final two." : "."}
         </div>
 
         {tension.length > 0 ? (

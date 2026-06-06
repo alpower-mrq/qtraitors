@@ -1,4 +1,5 @@
-import { AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import type { GameApi } from "@/game/useGame";
 import { HUMAN_ID, TABLE_SIZE } from "@/game/constants";
 import { HUD } from "@/components/table/HUD";
@@ -6,6 +7,9 @@ import { GameTable } from "@/components/table/GameTable";
 import { VoteBar } from "@/components/table/VoteBar";
 import { StickerTray } from "@/components/table/StickerTray";
 import { EliminationOverlay, ResultOverlay } from "@/components/overlays/DramaOverlays";
+
+// Shown once per session — first time the player reaches the table.
+let onboardingSeen = false;
 
 export function TableScreen({ api }: { api: GameApi }) {
   const { state } = api;
@@ -24,9 +28,34 @@ export function TableScreen({ api }: { api: GameApi }) {
 
   const eliminated = lastResult ? players.find((p) => p.id === lastResult.eliminatedId) : undefined;
 
+  // First-time onboarding hint.
+  const [showOnboard, setShowOnboard] = useState(!onboardingSeen);
+  useEffect(() => {
+    if (phase === "voting" && round === 1 && showOnboard) onboardingSeen = true;
+  }, [phase, round, showOnboard]);
+  useEffect(() => {
+    if (humanVoteTarget) setShowOnboard(false); // dismiss once they've voted
+  }, [humanVoteTarget]);
+  // shows through the whole first vote until they pick someone
+  const onboarding = showOnboard && phase === "voting" && round === 1 && !!human?.isAlive;
+
   return (
     <div className="qt-screen qt-table-screen">
       <HUD round={round} prizePool={prizePool} alive={alive} total={TABLE_SIZE} />
+
+      <AnimatePresence>
+        {onboarding && (
+          <motion.div
+            className="qt-onboard"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: [0, -5, 0] }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ y: { repeat: Infinity, duration: 1.4, ease: "easeInOut" }, opacity: { duration: 0.3 } }}
+          >
+            Choose someone to vote out
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <GameTable
         state={state}
