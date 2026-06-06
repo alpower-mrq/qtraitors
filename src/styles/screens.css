@@ -11,8 +11,8 @@
   width: 100%;
 }
 
-/* "wall of players" backdrop (homepage + game over). Brightened so it
-   actually reads, with a light scrim for text contrast. */
+/* "wall of players" backdrop (homepage + game over). Desaturated and
+   scrimmed so it reads as a premium dark wall, not a blue gradient. */
 .qt-wall {
   isolation: isolate;
   background: var(--blue-950);
@@ -22,14 +22,15 @@
   position: absolute;
   inset: 0;
   background: url("/hp-bg.webp") center top / cover no-repeat;
-  filter: brightness(1.7) saturate(1.12);
+  /* dimmed + desaturated so it reads as a premium dark wall, not a blue gradient */
+  filter: brightness(1.4) saturate(0.82);
   z-index: -2;
 }
 .qt-wall::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(2, 6, 24, 0.32) 0%, rgba(2, 6, 24, 0.06) 38%, rgba(2, 6, 24, 0.5) 100%);
+  background: linear-gradient(180deg, rgba(2, 6, 24, 0.46) 0%, rgba(2, 6, 24, 0.14) 42%, rgba(2, 6, 24, 0.62) 100%);
   z-index: -1;
 }
 

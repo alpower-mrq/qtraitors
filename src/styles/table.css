@@ -444,25 +444,6 @@
   }
 }
 
-/* ---- Survivor badge ---- */
-.qt-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 1px 7px 1px 5px;
-  border-radius: var(--r-pill);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
-  border: 1px solid var(--hairline);
-  color: var(--ink-soft);
-  white-space: nowrap;
-}
-.qt-badge .ic {
-  font-size: 10px;
-}
-
 /* ---- Floating sticker ---- */
 .qt-sticker {
   position: absolute;

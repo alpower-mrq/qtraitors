@@ -4,44 +4,6 @@ import { TIMINGS } from "@/game/constants";
 import { Avatar } from "@/components/table/Avatar";
 
 /* ----------------------------------------------------------------
-   TIE-BREAK — "The Traitors have decided…"
-   ---------------------------------------------------------------- */
-export function TieBreakerOverlay({ tied }: { tied: Player[] }) {
-  return (
-    <motion.div
-      className="qt-overlay scrim"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        className="qt-tie-kicker"
-        initial={{ scale: 0.7, y: 10 }}
-        animate={{ scale: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 220, damping: 16 }}
-      >
-        The Traitors have decided…
-      </motion.div>
-      <div className="qt-tie-sub">A tie. One of them won't see the next round.</div>
-
-      <div className="qt-tie-row">
-        {tied.map((p, i) => (
-          <motion.div
-            key={p.id}
-            className="qt-tie-cand"
-            animate={{ rotate: [0, -7, 7, -5, 0], y: [0, -5, 0] }}
-            transition={{ repeat: Infinity, duration: 0.7, delay: i * 0.12 }}
-          >
-            <Avatar avatarId={p.avatarId} size={78} />
-            <span className="nm">{p.name}</span>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ----------------------------------------------------------------
    ELIMINATION — the verdict lands.
    ---------------------------------------------------------------- */
 interface ElimProps {

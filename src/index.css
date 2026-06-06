@@ -90,7 +90,8 @@ body,
 body {
   font-family: var(--font-body);
   color: var(--ink);
-  background: var(--blue-900);
+  /* near-black navy so overscroll / surround never flashes bright blue */
+  background: var(--blue-950);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow: hidden;

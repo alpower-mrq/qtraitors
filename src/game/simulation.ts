@@ -1,21 +1,17 @@
 import type { GameState, Player } from "@/types";
 import { AVATAR_COUNT } from "@/data/avatars";
-import { BADGES } from "@/data/badges";
 import { NAME_POOL, HUMAN_NAME } from "@/data/names";
 import { HUMAN_ID, HUMAN_SEAT_INDEX, TABLE_SIZE } from "./constants";
 import { pick, randRange, shuffle } from "./util";
 
-const HUMAN_BADGE = { id: "new", icon: "🆕", label: "New here" };
-
 /**
- * Generate the 5 simulated opponents — names, badges and personality
+ * Generate the 5 simulated opponents — names and personality
  * knobs, but NO avatar yet (avatarId = -1). They claim their faces live
  * on the avatar-select screen; whatever they've grabbed is then carried
  * to the table by `assemblePlayers`.
  */
 export function createBots(): Player[] {
   const names = shuffle(NAME_POOL).slice(0, TABLE_SIZE - 1);
-  const badges = shuffle(BADGES);
   return names.map((name, i) => ({
     id: `bot_${i}`,
     name,
@@ -24,7 +20,6 @@ export function createBots(): Player[] {
     isAlive: true,
     seated: false,
     status: "idle",
-    badge: badges[i % badges.length],
     speed: randRange(0.35, 1),
     aggression: randRange(0.2, 0.9),
   }));
@@ -44,7 +39,6 @@ export function assemblePlayers(humanAvatarId: number, bots: Player[]): Player[]
     isAlive: true,
     seated: true,
     status: "ready",
-    badge: HUMAN_BADGE,
     speed: 1,
     aggression: 0,
   };

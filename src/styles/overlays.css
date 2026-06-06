@@ -27,46 +27,6 @@
   pointer-events: auto;
 }
 
-/* ---- Tie-break ---- */
-.qt-tie-kicker {
-  font-family: var(--font-display);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: clamp(26px, 8vw, 40px);
-  line-height: 1.02;
-  max-width: 9em;
-  background: linear-gradient(90deg, #fff 0%, var(--yellow) 50%, #fff 100%);
-  background-size: 220% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shimmer 2.4s linear infinite;
-}
-.qt-tie-sub {
-  margin-top: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink-soft);
-  letter-spacing: 0.02em;
-}
-.qt-tie-row {
-  display: flex;
-  gap: 18px;
-  margin-top: 26px;
-}
-.qt-tie-cand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-.qt-tie-cand .nm {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 13px;
-}
-
 /* ---- Elimination ---- */
 .qt-elim {
   display: flex;

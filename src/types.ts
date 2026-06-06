@@ -24,12 +24,6 @@ export type PresenceStatus =
   | "eliminated"
   | "spectating";
 
-export interface Badge {
-  id: string;
-  icon: string;
-  label: string;
-}
-
 export interface Sticker {
   id: string;
   emoji: string;
@@ -52,7 +46,6 @@ export interface Player {
   isAlive: boolean;
   seated: boolean; // has visually joined the table
   status: PresenceStatus;
-  badge: Badge | null;
   /** Bot behaviour knobs (0..1). Ignored for the human. */
   speed: number; // how quickly they act
   aggression: number; // how likely to pile onto a leading target

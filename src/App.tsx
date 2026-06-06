@@ -30,7 +30,7 @@ const MUSIC: Record<Route, "lobby" | "dark"> = {
   gameover: "lobby",
 };
 
-const CLICK_TARGETS = ".qt-btn, .qt-stake, .qt-back, .qt-vbar .next, .qt-vbar .leave";
+const CLICK_TARGETS = ".qt-btn, .qt-stake, .qt-back, .qt-sticker-btn, .qt-vbar .next, .qt-vbar .leave";
 
 export default function App() {
   const api = useGame();
