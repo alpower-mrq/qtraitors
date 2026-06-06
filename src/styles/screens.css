@@ -1,0 +1,443 @@
+/* ============================================================
+   SCREENS — splash/stake, avatar select, game over + shared shell
+   ============================================================ */
+
+.qt-screen {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+/* "wall of players" backdrop (homepage + game over). Brightened so it
+   actually reads, with a light scrim for text contrast. */
+.qt-wall {
+  isolation: isolate;
+  background: var(--blue-950);
+}
+.qt-wall::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/hp-bg.webp") center top / cover no-repeat;
+  filter: brightness(1.7) saturate(1.12);
+  z-index: -2;
+}
+.qt-wall::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(2, 6, 24, 0.32) 0%, rgba(2, 6, 24, 0.06) 38%, rgba(2, 6, 24, 0.5) 100%);
+  z-index: -1;
+}
+
+/* generic scroll region */
+.qt-scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---- Branded button: same chunky 3D style as the stake cards ---- */
+.qt-btn {
+  position: relative;
+  width: 100%;
+  border: none;
+  padding: 0;
+  border-radius: 18px;
+  background: #0a1a63; /* the lip */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 10px 16px rgba(2, 6, 30, 0.45));
+}
+.qt-btn .face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 22px;
+  border-radius: 18px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(180deg, #3258f2 0%, #0f37d8 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  transform: translateY(-6px);
+  transition: transform 0.08s var(--ease-out);
+  overflow: hidden;
+}
+.qt-btn .face::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
+  pointer-events: none;
+}
+.qt-btn:active .face {
+  transform: translateY(-2px);
+}
+.qt-btn:disabled {
+  opacity: 0.5;
+  filter: drop-shadow(0 5px 9px rgba(2, 6, 30, 0.4));
+}
+/* secondary / quieter action — same chunky shape, darker slate-blue fill */
+.qt-btn.ghost {
+  background: #070d28;
+  filter: drop-shadow(0 10px 16px rgba(2, 6, 30, 0.45));
+}
+.qt-btn.ghost .face {
+  background: linear-gradient(180deg, #28335c 0%, #18213f 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ---- Splash / stake select ---- */
+.qt-splash {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--safe-top) + 26px) 22px calc(var(--safe-bottom) + 22px);
+  overflow-y: auto;
+}
+.qt-title {
+  margin-top: 6px;
+  text-align: center;
+}
+.qt-logo {
+  display: block;
+  width: min(80%, 300px);
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 12px 28px rgba(0, 4, 30, 0.55));
+}
+.qt-title p {
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  max-width: 320px;
+  margin-inline: auto;
+  text-shadow: 0 2px 12px rgba(0, 2, 14, 0.8);
+}
+.qt-title p .hl {
+  color: var(--yellow);
+}
+
+.qt-stakes-head {
+  margin: 32px 0 16px;
+  text-align: center;
+}
+
+/* how-to-play steps under the stakes — numbered, no card */
+.qt-howto {
+  margin-top: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 0 6px;
+}
+.qt-step {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  text-align: left;
+}
+.qt-step .n {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #3258f2, #0f37d8);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 3px 0 #0a1a63;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: #fff;
+}
+.qt-step .t {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.32;
+  color: rgba(255, 255, 255, 0.9);
+}
+.qt-stake-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Chunky, pressable "candy" buttons: a dark lip sits behind a bright
+   front face that drops on press. */
+.qt-stake {
+  position: relative;
+  border: none;
+  padding: 0;
+  background: #0a1a63; /* the lip / shadow colour */
+  border-radius: 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 12px 16px rgba(2, 6, 30, 0.5));
+}
+.qt-stake .face {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 20px 18px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #3258f2 0%, #0f37d8 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  transform: translateY(-7px);
+  transition: transform 0.08s var(--ease-out);
+  overflow: hidden;
+}
+/* glossy top sheen */
+.qt-stake .face::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent);
+  pointer-events: none;
+}
+.qt-stake:active .face {
+  transform: translateY(-2px);
+}
+.qt-stake .amt {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1;
+  color: #fff;
+}
+.qt-stake .pool {
+  position: relative;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+
+/* ---- Avatar select ---- */
+.qt-avatar-screen {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding-top: calc(var(--safe-top) + 14px);
+}
+/* floats top-left — doesn't take a row, so the content sits higher */
+.qt-back {
+  position: absolute;
+  top: calc(var(--safe-top) + 10px);
+  left: 14px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+}
+.qt-back svg {
+  display: block;
+  margin-left: -2px; /* optically centre the chevron */
+}
+.qt-back:active {
+  background: var(--surface-strong);
+}
+.qt-avatar-screen header {
+  padding: 0 22px 12px;
+  text-align: center;
+}
+.qt-avatar-screen header h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  text-transform: uppercase;
+}
+.qt-avatar-screen header p {
+  color: var(--ink-soft);
+  font-size: 13px;
+  margin-top: 4px;
+}
+.qt-avatar-grid {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  padding: 12px 22px 20px;
+}
+.qt-avatar-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  transition: transform 0.12s var(--ease-spring);
+}
+.qt-avatar-cell:not(:disabled):active {
+  transform: scale(0.9);
+}
+.qt-avatar-cell.sel {
+  transform: scale(1.1);
+}
+.qt-avatar-cell.sel .qt-avatar-img {
+  filter: drop-shadow(0 0 5px var(--yellow)) drop-shadow(0 0 12px rgba(255, 223, 0, 0.85))
+    drop-shadow(0 6px 9px rgba(0, 2, 14, 0.5));
+}
+
+/* someone is eyeing this face right now */
+.qt-avatar-cell.choosing {
+  cursor: default;
+}
+.qt-avatar-cell.choosing .qt-avatar-img {
+  filter: drop-shadow(0 0 6px var(--sky)) drop-shadow(0 0 14px rgba(0, 178, 255, 0.7))
+    drop-shadow(0 6px 9px rgba(0, 2, 14, 0.5));
+}
+/* a face someone has locked — you can't have it */
+.qt-avatar-cell.picked {
+  cursor: not-allowed;
+}
+.qt-avatar-cell.picked .qt-avatar-img {
+  opacity: 0.5;
+}
+
+/* the picker's name, pinned over the bottom of their chosen face */
+.qt-taken-tag {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 86%;
+  padding: 4px 11px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 3;
+}
+.qt-taken-tag.choosing {
+  background: var(--sky);
+  color: #042033;
+  box-shadow: 0 4px 14px rgba(0, 178, 255, 0.55);
+}
+.qt-taken-tag.picked {
+  background: rgba(4, 9, 34, 0.9);
+  color: var(--ink-soft);
+  border: 1px solid var(--hairline-strong);
+}
+
+/* live "n players have picked" line above the CTA */
+.qt-pick-live {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.qt-pick-live .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: var(--glow-green);
+  animation: blink 1.2s ease-in-out infinite;
+}
+.qt-avatar-foot {
+  padding: 12px 18px calc(var(--safe-bottom) + 16px);
+  background: linear-gradient(180deg, transparent, rgba(5, 15, 77, 0.85) 40%);
+}
+
+/* ---- Game over ---- */
+.qt-over {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: calc(var(--safe-top) + 24px) 22px calc(var(--safe-bottom) + 24px);
+  gap: 6px;
+}
+.qt-over .eyebrow {
+  margin-bottom: 6px;
+}
+.qt-over h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+.qt-over h1 .hl {
+  color: var(--yellow);
+}
+.qt-over .sub {
+  color: var(--ink-soft);
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 300px;
+  line-height: 1.45;
+  margin: 10px 0 22px;
+}
+.qt-finalists {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  margin: 6px 0 26px;
+}
+.qt-finalist {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.qt-finalist .nm {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+}
+.qt-finalist .pay {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--green);
+}
+.qt-over-actions {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

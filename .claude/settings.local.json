@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(pkill -f \"vite\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(sips -g pixelWidth -g pixelHeight -g format assets/hp_bg)",
+      "Bash(cp assets/hp_bg public/hp-bg.png)",
+      "Bash(sips -Z 500 assets/hp_bg --out /tmp/hpbg_thumb.png)",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(sips -g pixelWidth -g pixelHeight assets/game_bg.png)",
+      "Bash(sips -Z 500 assets/game_bg.png --out /tmp/gamebg_thumb.png)",
+      "Bash(node scripts/compress-assets.mjs)",
+      "Bash(sips -g pixelWidth -g pixelHeight -g hasAlpha assets/coin_logo.png)",
+      "Bash(sips -Z 300 assets/coin_logo.png --out /tmp/coin_thumb.png)",
+      "Bash(cp assets/*.mp3 public/audio/)",
+      "Bash(sed -n '/\\\\.qt-splash {/,/^}/p' src/styles/screens.css)",
+      "Bash(afconvert -f m4af -d aac -b 64000 -q 127 -s 3 __TRACKED_VAR__.mp3 __TRACKED_VAR__.m4a)",
+      "Bash(afconvert -f m4af -d aac -b 96000 -q 127 __TRACKED_VAR__.mp3 __TRACKED_VAR__.m4a)",
+      "Bash(rm -f *.mp3)",
+      "Bash(git init *)",
+      "Bash(git config *)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m 'Q-Traitors — social elimination game prototype' -m 'Mobile-first React + TypeScript prototype: simulated 6-player table, 10s voting, tie-break re-votes, sticker reactions, live avatar picking, audio, and compressed WebP/AAC assets. *)"
+    ]
+  }
+}
