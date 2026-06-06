@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { useGame } from "@/game/useGame";
 import { audio } from "@/game/audio";
+import { IntroScreen } from "@/components/screens/IntroScreen";
 import { StakeSelectScreen } from "@/components/screens/StakeSelectScreen";
 import { AvatarSelectScreen } from "@/components/screens/AvatarSelectScreen";
 import { TableScreen } from "@/components/screens/TableScreen";
@@ -37,6 +38,8 @@ export default function App() {
   const { state } = api;
   const route = routeFor(state.phase);
   const [muted, setMuted] = useState(false);
+  // First-load splash; clears for the rest of the session once dismissed.
+  const [showSplash, setShowSplash] = useState(true);
 
   // Unlock audio on the first gesture + play a click for any button press.
   useEffect(() => {
@@ -65,31 +68,37 @@ export default function App() {
 
   return (
     <div className="app-frame">
-      <button
-        className="qt-mute"
-        onClick={() => setMuted(audio.toggleMute())}
-        aria-label={muted ? "Unmute" : "Mute"}
-      >
-        {muted ? "🔇" : "🔊"}
-      </button>
-
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={route}
-          style={{ position: "absolute", inset: 0, display: "flex" }}
-          initial={{ opacity: 0, scale: 0.99 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.01 }}
-          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      <LayoutGroup>
+        <button
+          className="qt-mute"
+          onClick={() => setMuted(audio.toggleMute())}
+          aria-label={muted ? "Unmute" : "Mute"}
         >
-          {route === "stake" && <StakeSelectScreen onSelect={api.selectStake} />}
-          {route === "avatar" && state.stake && (
-            <AvatarSelectScreen stake={state.stake} onConfirm={api.selectAvatar} onBack={api.backToStake} />
-          )}
-          {route === "table" && <TableScreen api={api} />}
-          {route === "gameover" && <GameOverScreen state={state} onRestart={api.restart} />}
-        </motion.div>
-      </AnimatePresence>
+          {muted ? "🔇" : "🔊"}
+        </button>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={route}
+            style={{ position: "absolute", inset: 0, display: "flex" }}
+            initial={{ opacity: 0, scale: 0.99 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.01 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {route === "stake" && <StakeSelectScreen onSelect={api.selectStake} entered={!showSplash} />}
+            {route === "avatar" && state.stake && (
+              <AvatarSelectScreen stake={state.stake} onConfirm={api.selectAvatar} onBack={api.backToStake} />
+            )}
+            {route === "table" && <TableScreen api={api} />}
+            {route === "gameover" && <GameOverScreen state={state} onRestart={api.restart} />}
+          </motion.div>
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showSplash && <IntroScreen key="intro" onDone={() => setShowSplash(false)} />}
+        </AnimatePresence>
+      </LayoutGroup>
     </div>
   );
 }

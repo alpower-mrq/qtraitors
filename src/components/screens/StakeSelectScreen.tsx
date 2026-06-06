@@ -1,29 +1,45 @@
 import { motion } from "framer-motion";
 import type { Stake } from "@/types";
-import { STAKES, TABLE_SIZE } from "@/game/constants";
+import { STAKES, TABLE_SIZE, BRAND_LOGO_ID } from "@/game/constants";
 import { formatMoney } from "@/game/util";
 
-export function StakeSelectScreen({ onSelect }: { onSelect: (s: Stake) => void }) {
+interface Props {
+  onSelect: (s: Stake) => void;
+  /** False while the intro splash is still showing; flips true once the
+      logo has landed, cueing the rest of the content to load in. */
+  entered: boolean;
+}
+
+export function StakeSelectScreen({ onSelect, entered }: Props) {
+  // Content holds hidden until the intro logo pans into place, then reveals.
+  const reveal = (delay: number) => ({
+    initial: false,
+    animate: entered ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 },
+    transition: { delay: entered ? delay : 0, type: "spring" as const, stiffness: 260, damping: 22 },
+  });
+
   return (
     <div className="qt-screen qt-wall">
       <div className="qt-splash">
-        <motion.div
-          className="qt-title"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 220, damping: 18 }}
-        >
-          <img className="qt-logo" src="/qtraitors-logo.webp" alt="Q-Traitors" />
-          <p>
+        <div className="qt-title">
+          <motion.img
+            layoutId={BRAND_LOGO_ID}
+            className="qt-logo"
+            src="/qtraitors-logo.webp"
+            alt="Q-Traitors"
+            draggable={false}
+            transition={{ layout: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } }}
+          />
+          <motion.p {...reveal(0.32)}>
             Read the room. Dodge the vote.
             <br />
             <span className="hl">Split the pot.</span>
-          </p>
-        </motion.div>
-
-        <div className="qt-stakes-head">
-          <div className="eyebrow">Pick your stake</div>
+          </motion.p>
         </div>
+
+        <motion.div className="qt-stakes-head" {...reveal(0.36)}>
+          <div className="eyebrow">Pick your stake</div>
+        </motion.div>
 
         <div className="qt-stake-grid">
           {STAKES.map((s, i) => (
@@ -31,9 +47,7 @@ export function StakeSelectScreen({ onSelect }: { onSelect: (s: Stake) => void }
               key={s}
               className="qt-stake"
               onClick={() => onSelect(s)}
-              initial={{ y: 24, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.15 + i * 0.06, type: "spring", stiffness: 260, damping: 20 }}
+              {...reveal(0.4 + i * 0.06)}
             >
               <span className="face">
                 <span className="amt">{formatMoney(s)}</span>
@@ -43,12 +57,7 @@ export function StakeSelectScreen({ onSelect }: { onSelect: (s: Stake) => void }
           ))}
         </div>
 
-        <motion.div
-          className="qt-howto"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
+        <motion.div className="qt-howto" {...reveal(0.6)}>
           <div className="qt-step">
             <span className="n">1</span>
             <span className="t">Six players take a seat.</span>

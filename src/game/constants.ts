@@ -37,3 +37,6 @@ export const TIMINGS = {
 /** The human always sits here; bots fill the rest. */
 export const HUMAN_SEAT_INDEX = 0;
 export const HUMAN_ID = "you";
+
+/** Shared layoutId so the intro logo morphs into its homepage position. */
+export const BRAND_LOGO_ID = "qt-brand-logo";
